@@ -1,3 +1,4 @@
+import { cleanup } from "@testing-library/react";
 import React, { useEffect, useState } from "react";
 
 function Question({ question, onAnswered }) {
@@ -5,15 +6,19 @@ function Question({ question, onAnswered }) {
 
   // add useEffect code
   useEffect(()=> {
-    const timer = setInterval(()=> {
+    const timer = setTimeout(()=> {
       if(timeRemaining > 0) {
-        setTimeRemaining(timeRemaining > 0 ? (timeRemaining - 1) : 10);
+        setTimeRemaining(timeRemaining - 1);
       }
       else {
         setTimeRemaining(10);
-        clearInterval(timer);
+        onAnswered(false);
       }
     }, 1000)
+
+    return function cleanup() {
+      clearTimeout(timer);
+    }
   });
 
   function handleAnswer(isCorrect) {
